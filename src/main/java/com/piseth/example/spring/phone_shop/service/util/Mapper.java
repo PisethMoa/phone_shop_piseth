@@ -10,7 +10,8 @@ public class Mapper {
         brand.setName(brandDTO.getName());
         return brand;
     }
-    public static BrandDTO brandDTO(Brand brand){
+
+    public static BrandDTO brandDTO(Brand brand) {
         BrandDTO brandDTO = new BrandDTO();
         brandDTO.setName(brand.getName());
         return brandDTO;
