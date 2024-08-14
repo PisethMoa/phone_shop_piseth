@@ -11,5 +11,6 @@ import java.util.List;
 public interface BrandRepository extends JpaRepository<Brand, Integer>, JpaSpecificationExecutor<Brand> {
     List<Brand> findByNameLike(String name);
 
+    // Homework for do junit test with h2 database
     List<Brand> findByNameContaining(String name);
 }
