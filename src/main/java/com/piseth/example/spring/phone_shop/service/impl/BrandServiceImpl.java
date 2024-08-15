@@ -7,6 +7,7 @@ import com.piseth.example.spring.phone_shop.service.BrandService;
 import com.piseth.example.spring.phone_shop.service.util.PageUtil;
 import com.piseth.example.spring.phone_shop.spec.BrandFilter;
 import com.piseth.example.spring.phone_shop.spec.BrandSpec;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +18,10 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
     @Autowired
-    private BrandRepository brandRepository;
+    private final BrandRepository brandRepository;
 
     @Override
     public Brand create(Brand brand) {
