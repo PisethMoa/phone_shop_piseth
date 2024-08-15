@@ -4,8 +4,23 @@ spring:
     username: phone_shop_piseth
     password: 123
   jpa:
-    properties:
-      hibernate:
-      dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+#spring:
+#  datasource:
+#    url: jdbc:h2:mem:testdb
+#    username: sa
+#    password:
+#  jpa:
+#    properties:
+#      hibernate:
+#      dialect: org.hibernate.dialect.H2Dialect
+#    hibernate:
+#      ddl-auto: create
+#  h2:
+#    console:
+#      enabled: true
+

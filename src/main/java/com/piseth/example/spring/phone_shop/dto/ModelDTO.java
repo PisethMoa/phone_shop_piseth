@@ -3,7 +3,7 @@ package com.piseth.example.spring.phone_shop.dto;
 import lombok.Data;
 
 @Data
-public class BrandDTO {
-    //    private Integer id;
+public class ModelDTO {
+    private Integer brandId;
     private String name;
 }
