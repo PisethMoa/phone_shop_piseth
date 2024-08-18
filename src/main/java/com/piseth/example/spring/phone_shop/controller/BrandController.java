@@ -1,10 +1,15 @@
 package com.piseth.example.spring.phone_shop.controller;
 
 import com.piseth.example.spring.phone_shop.dto.BrandDTO;
+import com.piseth.example.spring.phone_shop.dto.ModelDTO;
 import com.piseth.example.spring.phone_shop.dto.PageDTO;
 import com.piseth.example.spring.phone_shop.entity.Brand;
+import com.piseth.example.spring.phone_shop.entity.Model;
 import com.piseth.example.spring.phone_shop.mapper.BrandMapper;
+import com.piseth.example.spring.phone_shop.mapper.ModelMapper;
 import com.piseth.example.spring.phone_shop.service.BrandService;
+import com.piseth.example.spring.phone_shop.service.ModelService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +19,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("brands")
 public class BrandController {
-    @Autowired
-    private BrandService brandService;
+    //    @Autowired
+    private final BrandService brandService;
+    private final ModelService modelService;
+    private final ModelMapper modelMapper;
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> create(@RequestBody BrandDTO brandDTO) {
@@ -69,5 +77,14 @@ public class BrandController {
         */
         return ResponseEntity.ok(pageDTO);
         //        return ResponseEntity.ok(BrandMapper.INSTANCE.toBrandDTO(brand));
+    }
+
+    @GetMapping("{id}/models")
+    public ResponseEntity<?> getModelsByBrand(@PathVariable("id") Integer brandId) {
+        List<Model> list = modelService.getByBrandId(brandId);
+        List<ModelDTO> list1 = list.stream()
+                .map(modelMapper::modelDTO)
+                .toList();
+        return ResponseEntity.ok(list1);
     }
 }
