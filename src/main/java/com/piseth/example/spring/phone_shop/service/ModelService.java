@@ -7,5 +7,7 @@ import java.util.List;
 public interface ModelService {
     Model save(Model model);
 
-    List<Model> getByBrandId(Integer brandId);
+    List<Model> getByBrandId(Long brandId);
+
+    Model getById(Long id);
 }
