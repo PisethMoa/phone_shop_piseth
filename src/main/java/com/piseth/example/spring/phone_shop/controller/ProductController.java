@@ -10,8 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -37,5 +40,11 @@ public class ProductController {
     public ResponseEntity<?> setSalePrice(@PathVariable Long productId, @Valid @RequestBody PriceDTO priceDTO) {
         productService.setSalePrice(productId, priceDTO.getPrice());
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("uploadProduct")
+    public ResponseEntity<?> uploadProduct(@RequestParam("file") MultipartFile file) throws IOException {
+        Map<Integer, String> errorMap = productService.uploadProduct(file);
+        return ResponseEntity.ok(errorMap);
     }
 }
