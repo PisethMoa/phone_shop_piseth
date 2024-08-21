@@ -1,6 +1,7 @@
 package com.piseth.example.spring.phone_shop.service.impl;
 
 import com.piseth.example.spring.phone_shop.entity.Model;
+import com.piseth.example.spring.phone_shop.exception.ResourceNotFoundException;
 import com.piseth.example.spring.phone_shop.repository.ModelRepository;
 import com.piseth.example.spring.phone_shop.service.ModelService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,13 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public List<Model> getByBrandId(Integer brandId) {
+    public List<Model> getByBrandId(Long brandId) {
         return modelRepository.findByBrandId(brandId);
+    }
+
+    @Override
+    public Model getById(Long id) {
+        return modelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Model", id));
     }
 }

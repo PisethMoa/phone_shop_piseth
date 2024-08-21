@@ -5,9 +5,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionHandler { // Generics
+public class GlobalExceptionHandler {
+
+    // Handling custom API exceptions
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<?> handleApiException(ApiException apiException) {
+    public ResponseEntity<ErrorResponse> handleApiException(ApiException apiException) {
         ErrorResponse errorResponse = new ErrorResponse(apiException.getHttpStatus(), apiException.getMessage());
         return ResponseEntity
                 .status(apiException.getHttpStatus())

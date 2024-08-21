@@ -3,6 +3,9 @@ databaseChangeLog:
       id: 001_init_db_structure
       author: pisethmao2002@gmail.com
       changes:
+        #        - createSequence:
+        #            sequenceName: brand_id_seq
+        #            startValue: 1
         - createTable:
             tableName: brands
             columns:
@@ -12,6 +15,7 @@ databaseChangeLog:
                     primaryKey: true
                   name: brand_id
                   type: BIGINT
+              #                  defaultValueSequenceNext: brand_id_seq
               - column:
                   name: brand_name
                   type: VARCHAR(50)
