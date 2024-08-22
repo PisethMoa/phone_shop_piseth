@@ -73,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
     public void setSalePrice(Long productId, BigDecimal price) {
         // Business logic: price cannot be 0
         if (price.compareTo(BigDecimal.ZERO) == 0) {
-            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Price cannot be zero. Please set a valid sale price.");
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Price cannot be zero. Please set a valid sale price.");
         }
 
         // Continue with normal processing

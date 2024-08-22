@@ -6,6 +6,7 @@ import com.piseth.example.spring.phone_shop.entity.Product;
 import com.piseth.example.spring.phone_shop.entity.Sale;
 import com.piseth.example.spring.phone_shop.entity.SaleDetail;
 import com.piseth.example.spring.phone_shop.exception.ApiException;
+import com.piseth.example.spring.phone_shop.exception.ResourceNotFoundException;
 import com.piseth.example.spring.phone_shop.repository.ProductRepository;
 import com.piseth.example.spring.phone_shop.repository.SaleDetailRepository;
 import com.piseth.example.spring.phone_shop.repository.SaleRepository;
@@ -85,22 +86,49 @@ public class SaleServiceImpl implements SaleService {
         });
     }
 
-    private void saveSale(SaleDTO saleDTO) {
-        Sale sale = new Sale();
-        sale.setSoldDate(saleDTO.getSaleDate());
+    @Override
+    public Sale getById(Long saleId) {
+        return saleRepository.findById(saleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Sale", saleId));
+    }
+
+    @Override
+    public void cancelSale(Long saleId) {
+        // update sale status
+        Sale sale = getById(saleId);
+        sale.setActive(false);
         saleRepository.save(sale);
-        // Sale Detail
-        saleDTO.getProductSoleDTO().forEach(productSoleDTO -> {
-            SaleDetail saleDetail = new SaleDetail();
-            saleDetail.setAmount(null);
+        // update stock
+        List<SaleDetail> saleDetails = saleDetailRepository.findBySaleId(saleId);
+        List<Long> productIds = saleDetails.stream()
+                .map(saleDetail -> saleDetail.getProduct().getId())
+                .toList();
+        List<Product> products = productRepository.findAllById(productIds);
+        Map<Long, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
+        saleDetails.forEach(saleDetail -> {
+            Product product = productMap.get(saleDetail.getProduct().getId());
+            product.setAvailableUnit(product.getAvailableUnit() + saleDetail.getUnit());
+            productRepository.save(product);
         });
     }
+
+//    private void saveSale(SaleDTO saleDTO) {
+//        Sale sale = new Sale();
+//        sale.setSoldDate(saleDTO.getSaleDate());
+//        saleRepository.save(sale);
+//        // Sale Detail
+//        saleDTO.getProductSoleDTO().forEach(productSoleDTO -> {
+//            SaleDetail saleDetail = new SaleDetail();
+//            saleDetail.setAmount(null);
+//        });
+//    }
 
     private void validate(SaleDTO saleDTO) {
         saleDTO.getProductSoleDTO().forEach(productSoleDTO -> {
             Product product = productService.getById(productSoleDTO.getProductId());
             if (product.getAvailableUnit() < productSoleDTO.getNumberOfUnit()) {
-                throw new ApiException(HttpStatus.BAD_REQUEST, "Product [%s] is not enough in stock.".formatted(product.getName()));
+                throw new ApiException(HttpStatus.BAD_REQUEST, String.format("Product [%s] is not enough in stock.", product.getName()));
             }
         });
     }
