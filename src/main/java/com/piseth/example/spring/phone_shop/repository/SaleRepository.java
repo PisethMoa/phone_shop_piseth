@@ -15,8 +15,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             "from sale_details sd " +
             "inner join sales s on sd.sale_id = s.sale_id " +
             "inner join products p on p.id = sd.product_id " +
-            "where date(s.sold_date) between :startDate and :endDate " +
+            "where s.sold_date between :startDate and :endDate " +
             "group by p.id, p.name", nativeQuery = true)
     List<ProductSold> findProductSold(LocalDate startDate, LocalDate endDate);
-
 }
