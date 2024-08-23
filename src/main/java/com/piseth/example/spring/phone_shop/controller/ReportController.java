@@ -1,5 +1,6 @@
 package com.piseth.example.spring.phone_shop.controller;
 
+import com.piseth.example.spring.phone_shop.dto.ProductReportDTO;
 import com.piseth.example.spring.phone_shop.projection.ProductSold;
 import com.piseth.example.spring.phone_shop.service.ReportService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,13 @@ public class ReportController {
     public ResponseEntity<?> productSold(@DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable("startDate") LocalDate startDate,
                                          @DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable("endDate") LocalDate endDate) {
         List<ProductSold> productSoldList = reportService.getProductSold(startDate, endDate);
+        return ResponseEntity.ok(productSoldList);
+    }
+
+    @GetMapping("v2/{startDate}/{endDate}")
+    public ResponseEntity<?> productSoldV2(@DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable("startDate") LocalDate startDate,
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable("endDate") LocalDate endDate) {
+        List<ProductReportDTO> productSoldList = reportService.getProductReport(startDate, endDate);
         return ResponseEntity.ok(productSoldList);
     }
 }
