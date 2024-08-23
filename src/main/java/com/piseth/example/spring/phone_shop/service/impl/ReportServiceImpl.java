@@ -1,13 +1,18 @@
 package com.piseth.example.spring.phone_shop.service.impl;
 
 import com.piseth.example.spring.phone_shop.dto.ProductReportDTO;
+import com.piseth.example.spring.phone_shop.dto.report.ExpenseReportDTO;
 import com.piseth.example.spring.phone_shop.entity.Product;
+import com.piseth.example.spring.phone_shop.entity.ProductImportHistory;
 import com.piseth.example.spring.phone_shop.entity.SaleDetail;
 import com.piseth.example.spring.phone_shop.projection.ProductSold;
+import com.piseth.example.spring.phone_shop.repository.ProductImportHistoryRepository;
 import com.piseth.example.spring.phone_shop.repository.ProductRepository;
 import com.piseth.example.spring.phone_shop.repository.SaleDetailRepository;
 import com.piseth.example.spring.phone_shop.repository.SaleRepository;
 import com.piseth.example.spring.phone_shop.service.ReportService;
+import com.piseth.example.spring.phone_shop.spec.ProductImportHistoryFilter;
+import com.piseth.example.spring.phone_shop.spec.ProductImportHistorySpec;
 import com.piseth.example.spring.phone_shop.spec.SaleDetailFilter;
 import com.piseth.example.spring.phone_shop.spec.SaleDetailSpec;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,7 @@ public class ReportServiceImpl implements ReportService {
     private final SaleRepository saleRepository;
     private final SaleDetailRepository saleDetailRepository;
     private final ProductRepository productRepository;
+    private final ProductImportHistoryRepository productImportHistoryRepository;
 
     @Override
     public List<ProductSold> getProductSold(LocalDate startDate, LocalDate endDate) {
@@ -76,5 +80,46 @@ public class ReportServiceImpl implements ReportService {
             list.add(productReportDTO);
         }
         return list;
+    }
+
+    @Override
+    public List<ExpenseReportDTO> getExpenseReport(LocalDate startDate, LocalDate endDate) {
+        ProductImportHistoryFilter productImportHistoryFilter = new ProductImportHistoryFilter();
+        productImportHistoryFilter.setStartDate(startDate);
+        productImportHistoryFilter.setEndDate(endDate);
+        ProductImportHistorySpec productImportHistorySpec = new ProductImportHistorySpec(productImportHistoryFilter);
+        List<ProductImportHistory> list = productImportHistoryRepository.findAll(productImportHistorySpec);
+        Set<Long> set = list.stream()
+                .map(his -> his.getProduct().getId())
+                .collect(Collectors.toSet());
+        List<Product> list1 = productRepository.findAllById(set);
+        Map<Long, Product> map = list1.stream()
+                .collect(Collectors.toMap(Product::getId, product -> product));
+        Map<Product, List<ProductImportHistory>> map1 = list.stream()
+                .collect(Collectors.groupingBy(ProductImportHistory::getProduct));
+        var expenseReportDTOList = new ArrayList<ExpenseReportDTO>();
+        for (var entry : map1.entrySet()) {
+            Product product = map.get(entry.getKey().getId());
+            List<ProductImportHistory> list2 = entry.getValue();
+            int totalUnit = list2.stream()
+                    .mapToInt(ProductImportHistory::getImportUnit)
+                    .sum();
+            double totalAmount = list2.stream()
+                    .mapToDouble(pi -> pi.getImportUnit() * pi.getPricePerUnit().doubleValue())
+                    .sum();
+            var expenseReportDTO = new ExpenseReportDTO();
+            expenseReportDTO.setProductId(product.getId());
+            expenseReportDTO.setProductName(product.getName());
+            expenseReportDTO.setTotalUnit(totalUnit);
+            expenseReportDTO.setTotalAmount(BigDecimal.valueOf(totalAmount));
+            expenseReportDTOList.add(expenseReportDTO);
+        }
+        /*
+        for (ProductImportHistory productImportHistory : list) {
+            productImportHistory.
+        }
+        */
+        expenseReportDTOList.sort((a, b) -> (int) (a.getProductId() - b.getProductId()));
+        return expenseReportDTOList;
     }
 }
