@@ -1,12 +1,18 @@
 package com.piseth.example.spring.phone_shop.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "products",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"model_id", "color_id"})})

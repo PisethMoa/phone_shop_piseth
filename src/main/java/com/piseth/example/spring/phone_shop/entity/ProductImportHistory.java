@@ -1,13 +1,19 @@
 package com.piseth.example.spring.phone_shop.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
+@AllArgsConstructor
 @Entity
+@NoArgsConstructor
 @Table(name = "productImportHistories")
 public class ProductImportHistory {
     @Id
