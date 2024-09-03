@@ -4,9 +4,11 @@ import com.piseth.example.spring.phone_shop.dto.ModelDTO;
 import com.piseth.example.spring.phone_shop.entity.Model;
 import com.piseth.example.spring.phone_shop.mapper.ModelMapper;
 import com.piseth.example.spring.phone_shop.service.ModelService;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -18,6 +20,8 @@ public class ModelController {
     private final ModelMapper modelMapper;
 
     //    @RequestMapping(method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('model:write')")
+    @RolesAllowed("ROLE_ADMIN")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody ModelDTO modelDTO) {
         Model model = modelMapper.model(modelDTO);

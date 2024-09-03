@@ -25,8 +25,9 @@ public class SaleController {
             return ResponseEntity.status(500).body("An unexpected error occurred: " + ex.getMessage());
         }
     }
+
     @PutMapping("{saleId}/cancel")
-    public ResponseEntity<?> cancelSale(@PathVariable Long saleId){
+    public ResponseEntity<?> cancelSale(@PathVariable Long saleId) {
         saleService.cancelSale(saleId);
         return ResponseEntity.ok().build();
     }
