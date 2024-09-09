@@ -17,13 +17,14 @@ import java.util.Objects;
 @AllArgsConstructor
 public class ProductImportHistorySpec implements Specification<ProductImportHistory> {
     private ProductImportHistoryFilter productImportHistoryFilter;
+
     @Override
     public Predicate toPredicate(Root<ProductImportHistory> productImportHistoryRoot, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
-        if(Objects.nonNull((productImportHistoryFilter.getStartDate()))){
+        if (Objects.nonNull((productImportHistoryFilter.getStartDate()))) {
             criteriaBuilder.greaterThanOrEqualTo(productImportHistoryRoot.get("dateImport"), productImportHistoryFilter.getStartDate());
         }
-        if(Objects.nonNull((productImportHistoryFilter.getEndDate()))){
+        if (Objects.nonNull((productImportHistoryFilter.getEndDate()))) {
             criteriaBuilder.lessThanOrEqualTo(productImportHistoryRoot.get("dateImport"), productImportHistoryFilter.getEndDate());
         }
         return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
