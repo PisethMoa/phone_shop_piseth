@@ -1,8 +1,9 @@
 package com.piseth.example.spring.phone_shop.entity;
 
-import com.piseth.example.spring.phone_shop.config.security.RoleEnum;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -15,10 +16,10 @@ public class User {
     private String lastName;
     private String username;
     private String password;
-    @Enumerated(EnumType.STRING)
-    private RoleEnum roleEnum;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles;
 }
