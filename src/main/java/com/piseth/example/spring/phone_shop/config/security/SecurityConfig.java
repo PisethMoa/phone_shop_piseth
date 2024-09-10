@@ -20,8 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static com.piseth.example.spring.phone_shop.config.security.PermissionEnum.*;
-
 @Configuration
 public class SecurityConfig {
     @Autowired
@@ -42,8 +40,8 @@ public class SecurityConfig {
                         .permitAll()
 //                        .requestMatchers("/brands")
 //                        .hasRole("SALE") // "SALE"
-                        .requestMatchers(HttpMethod.POST, "/models")
-                        .hasAnyAuthority("model:write")
+                        .requestMatchers(HttpMethod.POST, "/brands")
+                        .hasAnyAuthority("brand:write")
                         .requestMatchers(HttpMethod.GET, "/brands")
                         .hasAnyAuthority("brand:read")
                         .anyRequest()
