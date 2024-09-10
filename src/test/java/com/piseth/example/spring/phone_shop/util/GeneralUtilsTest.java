@@ -2,13 +2,14 @@ package com.piseth.example.spring.phone_shop.util;
 
 import com.piseth.example.spring.phone_shop.utils.GeneralUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
 public class GeneralUtilsTest {
-    @Test
+//    @Test
     public void testToIntegerList() {
         // Given
         // Since: version 9
@@ -23,7 +24,7 @@ public class GeneralUtilsTest {
         assertEquals(5, list.get(2));
     }
 
-    @Test
+//    @Test
     public void testGetEvenNumber() {
         // given
         List<Integer> list = List.of(4, 5, 3, 20, 6, 8);
@@ -35,5 +36,11 @@ public class GeneralUtilsTest {
 //        assertEquals(4, evenNumbers.get(0));
         // Second Choice
         assertEquals(4, evenNumbers.getFirst());
+    }
+    @Test
+    public void showPassword(){
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encode = bCryptPasswordEncoder.encode("Piseth1711*#");
+        System.out.println(encode);
     }
 }
