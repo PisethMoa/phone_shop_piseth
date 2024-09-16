@@ -13,11 +13,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -26,6 +23,7 @@ public class SecurityConfig {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserDetailsService userDetailsService;
+    private AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -38,6 +36,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/", "/index.html", "/css/**", "/js/**")
                         .permitAll()
+//                        .requestMatchers(HttpMethod.PUT, "/brands/**")
+//                        .hasAuthority(PermissionEnum.BRAND_WRITE.getDescription())
 //                        .requestMatchers("/brands")
 //                        .hasRole("SALE") // "SALE"
                         .requestMatchers(HttpMethod.POST, "/brands")
@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .hasAnyAuthority("brand:read")
                         .anyRequest()
                         .authenticated())
-                .addFilter(new JwtLoginFilter(authenticationManager(httpSecurity.getSharedObject(AuthenticationConfiguration.class))))
+                .addFilter(new JwtLoginFilter(authenticationManager(authenticationConfiguration)))
                 .authenticationProvider(getAuthenticationProvider());
         return httpSecurity.build();
     }
@@ -56,24 +56,6 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    /*
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails userDetails = User.builder()
-                .username("Piseth Mao")
-                .password(passwordEncoder.encode("PiSeTh1711*#"))
-//                .roles("SALE") // ROLE_SALE
-                .authorities("ROLE_SALE", MODEL_READ.getDescription(), BRAND_READ.getDescription()) // collection of grantedAuthority
-                .build();
-        UserDetails userDetails1 = User.builder()
-                .username("Sophaneth Mao")
-                .password(passwordEncoder.encode("SoPhAnEtH"))
-//                .roles("ADMIN") // ROLE_ADMIN
-                .authorities("ROLE_ADMIN", BRAND_WRITE.getDescription(), BRAND_READ.getDescription(), MODEL_WRITE.getDescription())
-                .build();
-        return new InMemoryUserDetailsManager(userDetails, userDetails1);
-    }
-    */
     @Bean
     public AuthenticationProvider getAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
