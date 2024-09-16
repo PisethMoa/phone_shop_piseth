@@ -7,6 +7,8 @@ import com.piseth.example.spring.phone_shop.service.impl.BrandServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -21,6 +23,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class BrandServiceTest {
     @Mock
     private BrandRepository brandRepository;
+    @Captor
+    private ArgumentCaptor<Brand> brandCaptor;
     private BrandService brandService;
 
     @BeforeEach
@@ -84,5 +88,22 @@ public class BrandServiceTest {
 //                .hasMessage(String.format("%s with id = %d not found.", "Brand", 2));
 //                .hasMessageEndingWith("not found");
         // then
+    }
+
+    @Test
+    public void testUpdate() {
+        // given
+        Brand brand2 = new Brand(1L, "Apple");
+        Brand brand = new Brand(1L, "Apple 2");
+        // when
+        when(brandRepository.findById(1L)).thenReturn(Optional.of(brand2));
+//        when(brandRepository.save(any(Brand.class))).thenReturn(brand);
+        Brand brand1 = brandService.update(1L, brand);
+        // then
+        verify(brandRepository, times(1)).findById(1L);
+//        assertEquals("Apple 2U", brand1.getName());
+        verify(brandRepository).save(brandCaptor.capture());
+        assertEquals("Piseth Mao", brandCaptor.getValue().getName());
+        assertEquals(1L, brandCaptor.getValue().getId());
     }
 }

@@ -22,10 +22,12 @@ public class ProductImportHistorySpec implements Specification<ProductImportHist
     public Predicate toPredicate(Root<ProductImportHistory> productImportHistoryRoot, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
         if (Objects.nonNull((productImportHistoryFilter.getStartDate()))) {
-            criteriaBuilder.greaterThanOrEqualTo(productImportHistoryRoot.get("dateImport"), productImportHistoryFilter.getStartDate());
+            Predicate startDate = criteriaBuilder.greaterThanOrEqualTo(productImportHistoryRoot.get("dateImport"), productImportHistoryFilter.getStartDate());
+            predicates.add(startDate);
         }
         if (Objects.nonNull((productImportHistoryFilter.getEndDate()))) {
-            criteriaBuilder.lessThanOrEqualTo(productImportHistoryRoot.get("dateImport"), productImportHistoryFilter.getEndDate());
+            Predicate endDate = criteriaBuilder.lessThanOrEqualTo(productImportHistoryRoot.get("dateImport"), productImportHistoryFilter.getEndDate());
+            predicates.add(endDate);
         }
         return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
     }

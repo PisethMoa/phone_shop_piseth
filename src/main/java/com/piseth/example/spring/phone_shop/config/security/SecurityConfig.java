@@ -1,5 +1,6 @@
 package com.piseth.example.spring.phone_shop.config.security;
 
+import com.piseth.example.spring.phone_shop.config.jwt.FilterChainExceptionHandler;
 import com.piseth.example.spring.phone_shop.config.jwt.JwtLoginFilter;
 import com.piseth.example.spring.phone_shop.config.jwt.TokenVerifyFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,14 @@ public class SecurityConfig {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private FilterChainExceptionHandler filterChainExceptionHandler;
     private AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(filterChainExceptionHandler, JwtLoginFilter.class)
                 .addFilterAfter(new TokenVerifyFilter(), JwtLoginFilter.class)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
